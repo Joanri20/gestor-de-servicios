@@ -1,0 +1,228 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model Role {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  users     User[]
+}
+
+enum Enum_TipoDocumento {
+  CEDULA_CIUDADANIA
+  CEDULA_EXTRANJERIA
+  PASAPORTE
+  TARJETA_IDENTIDAD
+  NIT
+}
+
+enum Enum_Estado_User {
+  ACTIVO
+  INACTIVO
+}
+
+enum Enum_Estado_Servicio {
+  ACTIVO
+  SUSPENDIDO
+  RETIRADO
+}
+
+enum Enum_Poblacion {
+  URBANO
+  RURAL
+}
+
+enum Enum_Estado_Civil {
+  SOLTERO_A
+  CASADO_A
+  VIUDO_A
+  UNION_LIBRE
+  DIVORCIADO_A
+}
+
+enum Enum_Via_Sector {
+  CALLE
+  CARRERA
+  TORRE
+  BLOQUE
+  VEREDA
+  SECTOR
+  VIA
+  DIAGONAL
+  TRANSVERSAL
+}
+
+enum Enum_Genero {
+  MASCULINO
+  FEMENINO
+  OTRO
+}
+
+model Nomenclatura {
+  id                   Int             @id @default(autoincrement())
+  via                  Enum_Via_Sector
+  numero               Int
+  prefijo              String
+  nombre               String?          @unique
+  users                User[]
+  servicio             Servicio[]
+  ordenServicioDestino OrdenServicio[]
+}
+
+model User {
+  id                      Int                @id @default(autoincrement())
+  primerNombre            String
+  segundoNombre           String?
+  primerApellido          String
+  segundoApellido         String?
+  cargo                   String?
+  roles                   Role[]
+  especialidad            String?
+  caja                    Int?
+  tipoDocumento           Enum_TipoDocumento
+  documento               String
+  direccionNomenclatura   Nomenclatura       @relation(fields: [nomenclaturaId], references: [id])
+  nomenclaturaId          Int
+  viaGeneradora           String
+  prefijoViaGeneradora    String
+  numeroPlacaCasa         String
+  telefono                String?
+  correo                  String?
+  estadoCivil             Enum_Estado_Civil?
+  estrato                 Int?
+  genero                  Enum_Genero?
+  estado                  Enum_Estado_User
+  servicios               Servicio[]
+  ordenServicioCreadas    OrdenServicio[]    @relation("UsuarioCreo")
+  ordenServicioEjecutadas OrdenServicio[]    @relation("UsuarioEjecuto")
+  Cliente                 Cliente[]
+  createdAt               DateTime           @default(now())
+  updatedAt               DateTime           @updatedAt
+
+  @@unique([tipoDocumento, documento])
+}
+
+model Cliente {
+  id                    Int                @id @default(autoincrement())
+  tipoDocumento         Enum_TipoDocumento
+  documento             String
+  fechaExpedicion       DateTime
+  primerNombre          String
+  segundoNombre         String?
+  primerApellido        String
+  segundoApellido       String?
+  telefono              String?  
+  correo                String?
+  estadoCivil           Enum_Estado_Civil?
+  estrato               Int?
+  genero                Enum_Genero?
+  servicios             Servicio[]
+  user                  User               @relation(fields: [userId], references: [id])
+  userId                Int
+  createdAt             DateTime           @default(now())
+  updatedAt             DateTime           @updatedAt
+
+  @@unique([tipoDocumento, documento])
+}
+
+model Servicio {
+  id                    Int                  @id @default(autoincrement())
+  cliente               Cliente              @relation(fields: [clienteId], references: [id])
+  clienteId             Int
+  tipoServicio          Enum_Tipo_Servicio
+  plan                  Plan                 @relation(fields: [planId], references: [id])
+  planId                Int
+  direccionNomenclatura Nomenclatura         @relation(fields: [nomenclaturaId], references: [id])
+  nomenclaturaId        Int
+  viaGeneradora         Int
+  prefijoViaGeneradora  String
+  numeroPlacaCasa       Int
+  aptoCasa              Int?
+  infoAdicional         String?
+  estado                Enum_Estado_Servicio
+  user                  User                 @relation(fields: [userId], references: [id])
+  userId                Int
+  ordenServicios        OrdenServicio[]
+  createdAt             DateTime             @default(now())
+  updatedAt             DateTime             @updatedAt
+}
+
+enum Enum_Tipo_Propiedad {
+  RESIDENCIAL
+  COMERCIAL
+}
+
+model Plan {
+  id            Int                 @id @default(autoincrement())
+  descripcion   String
+  tipoServicio  Enum_Tipo_Servicio
+  tipoPropiedad Enum_Tipo_Propiedad
+  servicios     Servicio[]
+  poblacion     Enum_Poblacion
+  tarifa        Float
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+
+  @@unique([descripcion, tipoPropiedad, tipoServicio, poblacion, tarifa])
+}
+
+enum Enum_Tipo_Servicio {
+  TELEVISION
+  INTERNET
+}
+
+enum Enum_Estado_Orden {
+  ACTIVO
+  FINALIZADO
+  SUSPENDIDO
+  CANCELADO
+  EN_PROCESO
+}
+
+model OrdenServicio {
+  id                           Int               @id @default(autoincrement())
+  servicio                     Servicio          @relation(fields: [servicioId], references: [id])
+  servicioId                   Int
+  tipoOrdenServicio            TipoOrdenServicio @relation(fields: [tipoOrdenServicioId], references: [id])
+  tipoOrdenServicioId          Int
+  fechaCierreOrden             DateTime?
+  descripcion                  String?
+  observacionTecnica           String?
+  estado                       Enum_Estado_Orden
+  otrosCobros                  Float?
+  usuarioCreo                  User              @relation("UsuarioCreo", fields: [userIdCreo], references: [id])
+  userIdCreo                   Int
+  usuarioEjecuto               User              @relation("UsuarioEjecuto", fields: [userIdEjecuto], references: [id])
+  userIdEjecuto                Int
+  direccionNomenclaturaDestino Nomenclatura?     @relation(fields: [nomenclaturaIdDestino], references: [id])
+  nomenclaturaIdDestino        Int?
+  viaGeneradoraDestino         Int?
+  prefijoViaGeneradoraDestino  String?
+  numeroPlacaCasaDestino       Int?
+  aptoCasaDestino              Int?
+  infoAdicionalDestino         String?
+  createdAt                    DateTime          @default(now())
+  updatedAt                    DateTime          @updatedAt
+}
+
+model TipoOrdenServicio {
+  id             Int                @id @default(autoincrement())
+  nombre         String
+  tipoServicio   Enum_Tipo_Servicio
+  costo          Float?
+  ordenServicios OrdenServicio[]
+
+  @@unique([tipoServicio, nombre])
+}
+
