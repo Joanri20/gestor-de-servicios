@@ -1,10 +1,21 @@
+import { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient();
+
+export async function getServerSideProps() {
+  return {
+    props: {}, // will be passed to the page component as props
+  }
+}
 
 
-export default function Home() {
+
+const Home:NextPage =()=> {
   return (
     <div>
       <Head>
