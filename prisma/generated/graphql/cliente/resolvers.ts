@@ -1,9 +1,10 @@
 
     import prisma from 'config/prisma';
+import { Resolver } from 'types';
 
-    const ClienteResolvers = {
+    const ClienteResolvers:Resolver = {
     Cliente: {
-        servicios: async (parent:any, _:any) => {
+        servicios: async (parent) => {
                   return await prisma.servicio.findMany({
                   where: {
                       cliente: {
@@ -16,7 +17,7 @@
                     },
                   })
                 },
-                user: async (parent:any, _:any) => {
+                user: async (parent) => {
                 return await prisma.user.findUnique({
                     where: {
                     id: parent.userId,
@@ -29,7 +30,7 @@
         clientes: async () => {
         return await prisma.cliente.findMany({});
         },
-        cliente: async (_:any, args:any) => {
+        cliente: async (args) => {
         return await prisma.cliente.findUnique({
             where: {
             id: args.id,
@@ -38,12 +39,12 @@
         },
     },
     Mutation:{
-      createCliente:async (_:any, args:any)=>{
+      createCliente:async (args)=>{
         return await prisma.cliente.create({
           data:{...args.data, fechaExpedicion: new Date(args.data.fechaExpedicion).toISOString() }
         })
       },
-      updateCliente:async (_:any, args:any)=>{
+      updateCliente:async (args)=>{
         return await prisma.cliente.update({
           where:{
             id:args.where.id
@@ -51,7 +52,7 @@
           data:{...args.data, ...(args.data.fechaExpedicion && {fechaExpedicion: new Date(args.data.fechaExpedicion).toISOString()})}
         })
       },
-      deleteCliente:async (_:any, args:any)=>{
+      deleteCliente:async (args)=>{
         return await prisma.cliente.delete({
           where:{
             id:args.where.id

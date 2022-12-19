@@ -1,9 +1,10 @@
 
     import prisma from 'config/prisma';
+    import { Resolver } from 'types';
 
-    const UserResolvers = {
+    const UserResolvers:Resolver = {
     User: {
-        roles: async (parent:any, _:any) => {
+        roles: async (parent) => {
                   return await prisma.role.findMany({
                     where: {
                       users: {
@@ -16,14 +17,14 @@
                     },
                   });
                 },
-                direccionNomenclatura: async (parent:any, _:any) => {
+                direccionNomenclatura: async (parent) => {
                 return await prisma.nomenclatura.findUnique({
                     where: {
                     id: parent.nomenclaturaId,
                     },
                 });
                 }
-                ,servicios: async (parent:any, _:any) => {
+                ,servicios: async (parent) => {
                   return await prisma.servicio.findMany({
                   where: {
                       user: {
@@ -35,7 +36,7 @@
                       },
                     },
                   })
-                },ordenServicioCreadas: async (parent:any, _:any) => {
+                },ordenServicioCreadas: async (parent) => {
                   return await prisma.ordenServicio.findMany({
                   where: {
                       usuarioCreo: {
@@ -47,7 +48,7 @@
                       },
                     },
                   })
-                },ordenServicioEjecutadas: async (parent:any, _:any) => {
+                },ordenServicioEjecutadas: async (parent) => {
                   return await prisma.ordenServicio.findMany({
                   where: {
                       usuarioCreo: {
@@ -59,7 +60,7 @@
                       },
                     },
                   })
-                },Cliente: async (parent:any, _:any) => {
+                },Cliente: async (parent) => {
                   return await prisma.cliente.findMany({
                   where: {
                       user: {
@@ -77,7 +78,7 @@
         users: async () => {
         return await prisma.user.findMany({});
         },
-        user: async (_:any, args:any) => {
+        user: async (args) => {
         return await prisma.user.findUnique({
             where: {
             id: args.id,
@@ -86,12 +87,12 @@
         },
     },
     Mutation:{
-      createUser:async (_:any, args:any)=>{
+      createUser:async (args)=>{
         return await prisma.user.create({
           data:{...args.data,  }
         })
       },
-      updateUser:async (_:any, args:any)=>{
+      updateUser:async (args)=>{
         return await prisma.user.update({
           where:{
             id:args.where.id
@@ -99,7 +100,7 @@
           data:{...args.data, }
         })
       },
-      deleteUser:async (_:any, args:any)=>{
+      deleteUser:async (args)=>{
         return await prisma.user.delete({
           where:{
             id:args.where.id

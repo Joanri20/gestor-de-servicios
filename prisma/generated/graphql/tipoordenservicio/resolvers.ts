@@ -1,9 +1,10 @@
 
     import prisma from 'config/prisma';
+    import { Resolver } from 'types';
 
-    const TipoOrdenServicioResolvers = {
+    const TipoOrdenServicioResolvers:Resolver = {
     TipoOrdenServicio: {
-        ordenServicios: async (parent:any, _:any) => {
+        ordenServicios: async (parent) => {
                   return await prisma.ordenServicio.findMany({
                   where: {
                       tipoOrdenServicio: {
@@ -21,7 +22,7 @@
         tipoOrdenServicios: async () => {
         return await prisma.tipoOrdenServicio.findMany({});
         },
-        tipoOrdenServicio: async (_:any, args:any) => {
+        tipoOrdenServicio: async (args) => {
         return await prisma.tipoOrdenServicio.findUnique({
             where: {
             id: args.id,
@@ -30,12 +31,12 @@
         },
     },
     Mutation:{
-      createTipoOrdenServicio:async (_:any, args:any)=>{
+      createTipoOrdenServicio:async (args)=>{
         return await prisma.tipoOrdenServicio.create({
           data:{...args.data,  }
         })
       },
-      updateTipoOrdenServicio:async (_:any, args:any)=>{
+      updateTipoOrdenServicio:async (args)=>{
         return await prisma.tipoOrdenServicio.update({
           where:{
             id:args.where.id
@@ -43,7 +44,7 @@
           data:{...args.data, }
         })
       },
-      deleteTipoOrdenServicio:async (_:any, args:any)=>{
+      deleteTipoOrdenServicio:async (args)=>{
         return await prisma.tipoOrdenServicio.delete({
           where:{
             id:args.where.id

@@ -1,9 +1,10 @@
 
     import prisma from 'config/prisma';
+    import { Resolver } from 'types';
 
-    const PlanResolvers = {
+    const PlanResolvers:Resolver = {
     Plan: {
-        servicios: async (parent:any, _:any) => {
+        servicios: async (parent) => {
                   return await prisma.servicio.findMany({
                   where: {
                       plan: {
@@ -21,7 +22,7 @@
         plans: async () => {
         return await prisma.plan.findMany({});
         },
-        plan: async (_:any, args:any) => {
+        plan: async (args) => {
         return await prisma.plan.findUnique({
             where: {
             id: args.id,
@@ -30,12 +31,12 @@
         },
     },
     Mutation:{
-      createPlan:async (_:any, args:any)=>{
+      createPlan:async (args)=>{
         return await prisma.plan.create({
           data:{...args.data,  }
         })
       },
-      updatePlan:async (_:any, args:any)=>{
+      updatePlan:async (args)=>{
         return await prisma.plan.update({
           where:{
             id:args.where.id
@@ -43,7 +44,7 @@
           data:{...args.data, }
         })
       },
-      deletePlan:async (_:any, args:any)=>{
+      deletePlan:async (args)=>{
         return await prisma.plan.delete({
           where:{
             id:args.where.id

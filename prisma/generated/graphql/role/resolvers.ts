@@ -1,9 +1,10 @@
 
     import prisma from 'config/prisma';
+    import { Resolver } from 'types';
 
-    const RoleResolvers = {
+    const RoleResolvers:Resolver = {
     Role: {
-        users: async (parent:any, _:any) => {
+        users: async (parent) => {
                   return await prisma.user.findMany({
                     where: {
                       roles: {
@@ -21,7 +22,7 @@
         roles: async () => {
         return await prisma.role.findMany({});
         },
-        role: async (_:any, args:any) => {
+        role: async (args) => {
         return await prisma.role.findUnique({
             where: {
             id: args.id,
@@ -30,12 +31,12 @@
         },
     },
     Mutation:{
-      createRole:async (_:any, args:any)=>{
+      createRole:async (args)=>{
         return await prisma.role.create({
           data:{...args.data,  }
         })
       },
-      updateRole:async (_:any, args:any)=>{
+      updateRole:async (args)=>{
         return await prisma.role.update({
           where:{
             id:args.where.id
@@ -43,7 +44,7 @@
           data:{...args.data, }
         })
       },
-      deleteRole:async (_:any, args:any)=>{
+      deleteRole:async (args)=>{
         return await prisma.role.delete({
           where:{
             id:args.where.id

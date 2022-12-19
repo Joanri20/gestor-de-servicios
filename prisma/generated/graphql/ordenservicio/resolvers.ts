@@ -1,10 +1,11 @@
 
     import prisma from 'config/prisma';
+    import { Resolver } from 'types';
 
-    const OrdenServicioResolvers = {
+    const OrdenServicioResolvers:Resolver = {
     OrdenServicio: {
         
-                servicio: async (parent:any, _:any) => {
+                servicio: async (parent) => {
                 return await prisma.servicio.findUnique({
                     where: {
                     id: parent.servicioId,
@@ -12,7 +13,7 @@
                 });
                 }
                 ,
-                tipoOrdenServicio: async (parent:any, _:any) => {
+                tipoOrdenServicio: async (parent) => {
                 return await prisma.tipoOrdenServicio.findUnique({
                     where: {
                     id: parent.tipoOrdenServicioId,
@@ -20,7 +21,7 @@
                 });
                 }
                 ,
-                usuarioCreo: async (parent:any, _:any) => {
+                usuarioCreo: async (parent) => {
                 return await prisma.user.findUnique({
                     where: {
                     id: parent.userIdCreo,
@@ -28,7 +29,7 @@
                 });
                 }
                 ,
-                usuarioEjecuto: async (parent:any, _:any) => {
+                usuarioEjecuto: async (parent) => {
                 return await prisma.user.findUnique({
                     where: {
                     id: parent.userIdEjecuto,
@@ -36,7 +37,7 @@
                 });
                 }
                 ,
-                direccionNomenclaturaDestino: async (parent:any, _:any) => {
+                direccionNomenclaturaDestino: async (parent) => {
                   if (parent.nomenclaturaIdDestino) {
                     return await prisma.nomenclatura.findUnique({
                         where: {
@@ -54,7 +55,7 @@
         ordenServicios: async () => {
         return await prisma.ordenServicio.findMany({});
         },
-        ordenServicio: async (_:any, args:any) => {
+        ordenServicio: async (args) => {
         return await prisma.ordenServicio.findUnique({
             where: {
             id: args.id,
@@ -63,12 +64,12 @@
         },
     },
     Mutation:{
-      createOrdenServicio:async (_:any, args:any)=>{
+      createOrdenServicio:async (args)=>{
         return await prisma.ordenServicio.create({
           data:{...args.data, fechaCierreOrden: new Date(args.data.fechaCierreOrden).toISOString() }
         })
       },
-      updateOrdenServicio:async (_:any, args:any)=>{
+      updateOrdenServicio:async (args)=>{
         return await prisma.ordenServicio.update({
           where:{
             id:args.where.id
@@ -76,7 +77,7 @@
           data:{...args.data, ...(args.data.fechaCierreOrden && {fechaCierreOrden: new Date(args.data.fechaCierreOrden).toISOString()})}
         })
       },
-      deleteOrdenServicio:async (_:any, args:any)=>{
+      deleteOrdenServicio:async (args)=>{
         return await prisma.ordenServicio.delete({
           where:{
             id:args.where.id

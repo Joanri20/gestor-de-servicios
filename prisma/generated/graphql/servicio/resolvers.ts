@@ -1,10 +1,11 @@
 
     import prisma from 'config/prisma';
+    import { Resolver } from 'types';
 
-    const ServicioResolvers = {
+    const ServicioResolvers:Resolver = {
     Servicio: {
         
-                cliente: async (parent:any, _:any) => {
+                cliente: async (parent) => {
                 return await prisma.cliente.findUnique({
                     where: {
                     id: parent.clienteId,
@@ -12,7 +13,7 @@
                 });
                 }
                 ,
-                plan: async (parent:any, _:any) => {
+                plan: async (parent) => {
                 return await prisma.plan.findUnique({
                     where: {
                     id: parent.planId,
@@ -20,7 +21,7 @@
                 });
                 }
                 ,
-                direccionNomenclatura: async (parent:any, _:any) => {
+                direccionNomenclatura: async (parent) => {
                 return await prisma.nomenclatura.findUnique({
                     where: {
                     id: parent.nomenclaturaId,
@@ -28,14 +29,14 @@
                 });
                 }
                 ,
-                user: async (parent:any, _:any) => {
+                user: async (parent) => {
                 return await prisma.user.findUnique({
                     where: {
                     id: parent.userId,
                     },
                 });
                 }
-                ,ordenServicios: async (parent:any, _:any) => {
+                ,ordenServicios: async (parent) => {
                   return await prisma.ordenServicio.findMany({
                   where: {
                       servicio: {
@@ -53,7 +54,7 @@
         servicios: async () => {
         return await prisma.servicio.findMany({});
         },
-        servicio: async (_:any, args:any) => {
+        servicio: async (args) => {
         return await prisma.servicio.findUnique({
             where: {
             id: args.id,
@@ -62,12 +63,12 @@
         },
     },
     Mutation:{
-      createServicio:async (_:any, args:any)=>{
+      createServicio:async (args)=>{
         return await prisma.servicio.create({
           data:{...args.data,  }
         })
       },
-      updateServicio:async (_:any, args:any)=>{
+      updateServicio:async (args)=>{
         return await prisma.servicio.update({
           where:{
             id:args.where.id
@@ -75,7 +76,7 @@
           data:{...args.data, }
         })
       },
-      deleteServicio:async (_:any, args:any)=>{
+      deleteServicio:async (args)=>{
         return await prisma.servicio.delete({
           where:{
             id:args.where.id

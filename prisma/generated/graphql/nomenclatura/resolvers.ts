@@ -1,9 +1,9 @@
-import { equal } from "assert";
 import prisma from "config/prisma";
+import { Resolver } from 'types';
 
-    const NomenclaturaResolvers = {
+    const NomenclaturaResolvers:Resolver = {
     Nomenclatura: {
-        users: async (parent:any, _:any) => {
+        users: async (parent) => {
                   return await prisma.user.findMany({
                   where: {
                       direccionNomenclatura: {
@@ -15,7 +15,7 @@ import prisma from "config/prisma";
                       },
                     },
                   })
-                },servicio: async (parent:any, _:any) => {
+                },servicio: async (parent) => {
                   return await prisma.servicio.findMany({
                   where: {
                       direccionNomenclatura: {
@@ -27,7 +27,7 @@ import prisma from "config/prisma";
                       },
                     },
                   })
-                },ordenServicioDestino: async (parent:any, _:any) => {
+                },ordenServicioDestino: async (parent) => {
                   return await prisma.ordenServicio.findMany({
                   where: {
                       direccionNomenclaturaDestino: {
@@ -45,7 +45,7 @@ import prisma from "config/prisma";
         nomenclaturas: async () => {
         return await prisma.nomenclatura.findMany({});
         },
-        nomenclatura: async (_:any, args:any) => {
+        nomenclatura: async (args) => {
         return await prisma.nomenclatura.findUnique({
             where: {
               id: args.id,              
@@ -54,12 +54,12 @@ import prisma from "config/prisma";
         },
     },
     Mutation:{
-      createNomenclatura:async (_:any, args:any)=>{
+      createNomenclatura:async (args)=>{
         return await prisma.nomenclatura.create({
           data:{...args.data,  }
         })
       },
-      updateNomenclatura:async (_:any, args:any)=>{
+      updateNomenclatura:async (args)=>{
         return await prisma.nomenclatura.update({
           where:{
             id:args.where.id
@@ -67,7 +67,7 @@ import prisma from "config/prisma";
           data:{...args.data, }
         })
       },
-      deleteNomenclatura:async (_:any, args:any)=>{
+      deleteNomenclatura:async (args)=>{
         return await prisma.nomenclatura.delete({
           where:{
             id:args.where.id
